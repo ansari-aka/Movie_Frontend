@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Box, Fade } from "@mui/material";
+import { Container, Typography, Box, Fade, Alert } from "@mui/material";
 import api from "../api/axios";
 import MovieGrid from "../components/MovieGrid";
 import PaginationBar from "../components/PaginationBar";
@@ -12,14 +12,26 @@ export default function Home() {
 
   const [initialLoad, setInitialLoad] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+  const [loadedOk, setLoadedOk] = useState(false); // ✅ did request succeed?
 
   const fetchMovies = async (page = 1) => {
     try {
-      if (initialLoad) setLoading(true); // ✅ only first load
+      setErr("");
+      if (initialLoad) setLoading(true);
+
       const res = await api.get("/movies/sorted", {
         params: { page, limit: 12, ...sort },
       });
+
       setData(res.data);
+      setLoadedOk(true);
+    } catch (e) {
+      setLoadedOk(false);
+      // show real reason (429/CORS/404/etc.)
+      setErr(
+        e?.response?.data?.message || e?.message || "Failed to load movies.",
+      );
     } finally {
       setLoading(false);
       setInitialLoad(false);
@@ -50,9 +62,15 @@ export default function Home() {
           <SortSelect value={sort} onChange={setSort} />
         </Box>
 
+        {err ? (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {err}
+          </Alert>
+        ) : null}
+
         {initialLoad && loading ? (
           <MovieListSkeleton count={6} />
-        ) : data.items.length === 0 ? (
+        ) : loadedOk && data.items.length === 0 ? (
           <Box sx={{ py: 8, textAlign: "center" }}>
             <Typography variant="h6" fontWeight={700}>
               No movies available
@@ -66,7 +84,7 @@ export default function Home() {
           </Fade>
         )}
 
-        {totalPages > 1 && (
+        {loadedOk && totalPages > 1 && (
           <PaginationBar
             page={data.page}
             totalPages={totalPages}
