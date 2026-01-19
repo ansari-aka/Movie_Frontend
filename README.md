@@ -1,16 +1,77 @@
-# React + Vite
+# Movie App Frontend (React + Material UI)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend for the Movie Web Application.  
+It consumes the **Movie API Backend** (your own API) to display movies for users and provide admin-only dashboards for managing movies.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
 
-## React Compiler
+- **React (Vite)**
+- **Material UI (MUI)**
+- **React Router DOM**
+- **Context API** for auth state
+- **Axios** with JWT interceptor
+- **localStorage** for token + user persistence
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Public / User
+- ✅ Home page: list all movies with pagination
+- ✅ Sorting by:
+  - Name (`title`)
+  - Rating (`rating`)
+  - Release Date (`releaseDate`)
+  - Duration (`durationMinutes`)
+- ✅ Search page: search by movie name or description
+- ✅ Responsive UI with MUI components
+
+### Authentication
+- ✅ Login (JWT)
+- ✅ Signup with validation (server-side + client-side confirmation)
+- ✅ Token and user info saved in `localStorage`
+- ✅ Auto-attach token to API calls via Axios interceptor
+
+### Admin (Role Based Access)
+- ✅ Admin Dashboard page (cards UI)
+- ✅ Add Movie page
+- ✅ Manage Movies (Edit/Delete)
+- ✅ Bulk Upload movies (JSON paste) using queue endpoint (`/movies/bulk`)
+- ✅ Protected Routes:
+  - User must be logged in
+  - User must have role `admin` to access admin pages
+
+---
+
+## Prerequisites
+
+- Node.js **18+**
+- Backend running (local or deployed)
+
+---
+
+## Setup & Run Locally
+
+### 1) Install dependencies
+```bash
+cd frontend
+npm install
+
+```
+
+### 2) Set environment variables
+
+Create .env:
+```
+VITE_API_URL=http://localhost:5000 or your api
+```
+### 3) Start development server
+```
+npm run dev
+```
+
+## live Demo
+
+ [Preview link](https://gentle-cheesecake-14eead.netlify.app/)
